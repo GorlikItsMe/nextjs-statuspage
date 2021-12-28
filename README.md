@@ -67,3 +67,15 @@ After that run to propagate database
 ```bash
 npx prisma db push
 ```
+
+
+## Setup PlanetScale
+```
+sudo apt-get install mysql-client
+wget https://github.com/planetscale/cli/releases/download/v0.88.0/pscale_0.88.0_linux_amd64.deb
+sudo dpkg -i pscale_0.88.0_linux_amd64.deb
+
+pscale login
+
+pscale shell statuspage main  # access to database sql
+```
