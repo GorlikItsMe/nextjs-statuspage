@@ -10,23 +10,31 @@ datasource db {
   referentialIntegrity = "prisma"
 }
 
+enum CheckMethodType {
+  HTTP
+}
+
 model Category {
   id      Int       @id @default(autoincrement())
   name    String
-  Product Product[]
+  Service Service[]
 }
 
-model Product {
-  id          Int      @id @default(autoincrement())
-  name        String
-  desc        String
-  published   Boolean  @default(false)
-  price       Decimal  @default(9.99)
-  stockAmount Int      @default(100)
-  category    Category @relation(fields: [categoryId], references: [id])
-  categoryId  Int
-  createdAt   DateTime @default(now()) @map(name: "created_at")
-  updatedAt   DateTime @updatedAt @map(name: "updated_at")
+model Service {
+  id         Int      @id @default(autoincrement())
+  name       String
+  pos        Int      @default(0)
+  isOnline   Boolean  @default(false) @map("is_online")
+  category   Category @relation(fields: [categoryId], references: [id])
+  categoryId Int
 
-  @@map(name: "products")
+  // checking method
+  check_method CheckMethodType @default(HTTP)
+  url          String?
+
+  // meta
+  createdAt DateTime @default(now()) @map(name: "created_at")
+  updatedAt DateTime @updatedAt @map(name: "updated_at")
+
+  @@map(name: "services")
 }

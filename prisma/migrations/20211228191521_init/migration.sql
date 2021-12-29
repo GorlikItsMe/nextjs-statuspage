@@ -7,14 +7,14 @@ CREATE TABLE `Category` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `products` (
+CREATE TABLE `services` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(191) NOT NULL,
-    `desc` VARCHAR(191) NOT NULL,
-    `published` BOOLEAN NOT NULL DEFAULT false,
-    `price` DECIMAL(65, 30) NOT NULL DEFAULT 9.99,
-    `stockAmount` INTEGER NOT NULL DEFAULT 100,
+    `pos` INTEGER NOT NULL DEFAULT 0,
+    `is_online` BOOLEAN NOT NULL DEFAULT false,
     `categoryId` INTEGER NOT NULL,
+    `check_method` ENUM('HTTP') NOT NULL DEFAULT 'HTTP',
+    `url` VARCHAR(191) NULL,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL,
 
