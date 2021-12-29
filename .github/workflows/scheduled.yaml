@@ -1,0 +1,12 @@
+name: checking-uptime-cron-job
+on:
+  schedule:
+    - cron: "* * * * *"
+jobs:
+  cron:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checking-uptime-cron-job
+        run: |
+          curl --request GET \
+          --url 'https://nextjs-statuspage.vercel.app/api/cron'
