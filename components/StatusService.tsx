@@ -7,7 +7,10 @@ export default function StatusService({ service }: {
     StatusLog: StatusLog[];
   })
 }) {
-  var isRed = !service.StatusLog[0].isOnline;
+  let isRed = true;
+  if (service.StatusLog.length != 0) {
+    isRed = !service.StatusLog[0].isOnline;
+  }
 
   if (isRed) {
     return (
