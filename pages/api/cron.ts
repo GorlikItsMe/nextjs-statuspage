@@ -54,6 +54,11 @@ async function ProcessCheckReport(cr: CheckReport): Promise<CheckReport> {
   const service = cr.service;
   const newStatus = cr.status;
   let lastevent = service.Event[0];
+  let lastStatusLogStatus = false;
+  if (cr.service.StatusLog.length != 0) {
+    lastStatusLogStatus = cr.service.StatusLog[0].isOnline;
+  }
+
   let nowdt = new Date();
 
   if (lastevent == undefined) {
@@ -83,7 +88,7 @@ async function ProcessCheckReport(cr: CheckReport): Promise<CheckReport> {
     .catch((err) => console.error(err));
 
   // czy usługa była wcześniej w takim samym stanie
-  const isTheSameAsLastTime = cr.service.StatusLog[0].isOnline == cr.status;
+  const isTheSameAsLastTime = lastStatusLogStatus == cr.status;
 
   if (isTheSameAsLastTime) {
     console.log("isTheSameAsLastTime");
