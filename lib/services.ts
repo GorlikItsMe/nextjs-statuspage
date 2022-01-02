@@ -13,16 +13,16 @@ export async function getServicesData(): Promise<RichCategory[]> {
   return categoryList;
 }
 
-export async function updateServiceUptime(
-  serviceId: number,
-  newStatus: boolean
-): Promise<Service> {
-  return await prisma.service.update({
-    where: {
-      id: serviceId,
-    },
-    data: {
-      isOnline: newStatus,
-    },
-  });
-}
+// export async function updateServiceUptime(
+//   serviceId: number,
+//   newStatus: boolean
+// ): Promise<Service> {
+//   return await prisma.service.update({
+//     where: {
+//       id: serviceId,
+//     },
+//     data: {
+//       isOnline: newStatus,
+//     },
+//   });
+// }

@@ -1,16 +1,21 @@
 import React from 'react'
 import Head from 'next/head'
 import { GetServerSideProps, GetStaticProps } from 'next'
-import { getServicesData } from '../lib/services'
 import Layout from '../components/layout'
 import StatusCategory from '../components/StatusCategory';
 import { RichCategory } from '../lib/services';
+import prisma from '../lib/prisma'
+import { Category, Service, StatusLog } from '@prisma/client';
 
 
 export default function StatusPage({
   categoryList
 }: {
-  categoryList: RichCategory[]
+  categoryList: (Category & {
+    Service: (Service & {
+      StatusLog: StatusLog[];
+    })[];
+  })[]
 }) {
   return (
     <Layout home>
@@ -25,7 +30,20 @@ export default function StatusPage({
 }
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  const categoryList = await getServicesData()
+  const categoryList = await prisma.category.findMany({
+    include: {
+      Service: {
+        include: {
+          StatusLog: {
+            take: 1,
+            orderBy: {
+              dt: "desc",
+            }
+          }
+        }
+      }
+    },
+  });
   return {
     props: {
       categoryList

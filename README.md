@@ -1,8 +1,10 @@
-This is a starter template for [Learn Next.js](https://nextjs.org/learn).
+# NextJs StatusPage
 
-# Setup
+Strona z statusem twoich usług napisana przy użyciu Nextjs, Typescript. Używająca PlanetScale oraz cronhub.io
 
-Next.js
+## Setup
+
+### Next.js
 
 ```bash
 npm install
@@ -10,12 +12,16 @@ npm run dev
 npm build
 ```
 
-Prisma (database)
+### Prisma (database)
 
 ```bash
 npx prisma db push # synchronizowane bazy danych
 npx prisma studio # tryb studia (łatwe edytowanie bazy danych)
 ```
+
+### cronhub.io
+
+Ustaw cron na `*/5 * * * *` (co 5 min) żeby robił GET'a do `/api/cron`
 
 ## Examples (what i will propably use in future)
 
@@ -51,25 +57,8 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
 };
 ```
 
-https://vercel.com/guides/nextjs-prisma-postgres
-
-## Database User
-
-```bash
-CREATE DATABASE nextjsshopdb;
-CREATE USER 'nextjsshop'@'%' IDENTIFIED BY 'password';
-GRANT ALL PRIVILEGES ON nextjsshopdb . * TO 'nextjsshop'@'%';
-FLUSH PRIVILEGES;
-```
-
-After that run to propagate database
-
-```bash
-npx prisma db push
-```
-
-
 ## Setup PlanetScale
+
 ```
 sudo apt-get install mysql-client
 wget https://github.com/planetscale/cli/releases/download/v0.88.0/pscale_0.88.0_linux_amd64.deb

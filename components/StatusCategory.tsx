@@ -1,11 +1,16 @@
 import StatusService from './StatusService';
-import { RichCategory } from '../lib/services';
+import { Category, StatusLog, Service } from '@prisma/client';
 
 
-
-export default function StatusCategory({ category }: { category: RichCategory }) {
+export default function StatusCategory({ category }: {
+  category: Category & {
+    Service: (Service & {
+      StatusLog: StatusLog[];
+    })[]
+  }
+}) {
   return (
-    <div className='mx-auto bg-white rounded-xl shadow-lg p-5'>
+    <div className='mx-auto bg-white rounded-xl shadow-lg p-5 mb-2'>
       <h2 className='text-2xl'>{category.name}</h2>
       <div>
         {category.Service.map((s) => {

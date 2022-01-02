@@ -1,8 +1,13 @@
-import { Service } from '@prisma/client';
+import { Service, StatusLog } from '@prisma/client';
 
 
-export default function StatusService({ service }: { service: Service }) {
-  var isRed = !service.isOnline;
+
+export default function StatusService({ service }: {
+  service: (Service & {
+    StatusLog: StatusLog[];
+  })
+}) {
+  var isRed = !service.StatusLog[0].isOnline;
 
   if (isRed) {
     return (
