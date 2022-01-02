@@ -75,7 +75,7 @@ async function ProcessCheckReport(cr: CheckReport): Promise<CheckReport> {
   }
 
   // zapisz status_log
-  prisma.statusLog
+  await prisma.statusLog
     .create({
       data: {
         serviceId: service.id,
@@ -94,7 +94,7 @@ async function ProcessCheckReport(cr: CheckReport): Promise<CheckReport> {
     console.log("isTheSameAsLastTime");
     // taki sam stan usługi nic się nie zmieniło
     // zaktualizuj ostatni EVENT (ustaw dt na Now())
-    prisma.event
+    await prisma.event
       .update({
         where: { id: lastevent.id },
         data: { dtEnd: nowdt },
@@ -106,7 +106,7 @@ async function ProcessCheckReport(cr: CheckReport): Promise<CheckReport> {
     if (cr.status) {
       // jest teraz online
       // dodaj nowy EVENT że usługa wróciła
-      prisma.event
+      await prisma.event
         .create({
           data: {
             serviceId: service.id,
@@ -122,7 +122,7 @@ async function ProcessCheckReport(cr: CheckReport): Promise<CheckReport> {
     } else {
       // jest teraz offline
       // dodaj nowy EVENT że usługa sie wywaliła
-      prisma.event
+      await prisma.event
         .create({
           data: {
             serviceId: service.id,
@@ -195,6 +195,6 @@ export default async function CronAPI(_: NextApiRequest, res: NextApiResponse) {
       });
     });
   });
-
+  console.log("=================")
   res.status(200).json(resultJson);
 }
