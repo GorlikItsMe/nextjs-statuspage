@@ -30,12 +30,27 @@ export default function StatusPage({
       if (start == 0) {
         fetch('/api/status')
           .then(r => r.json())
-          .then(data => setCategoryList(data))
-        console.log("update status")
+          .then((data: (Category & {
+            Service: (Service & {
+              StatusLog: StatusLog[];
+            })[];
+          })[]) => {
+            data.forEach((c) => {
+              c.Service.forEach((s) => {
+                s.StatusLog.forEach((sl) => {
+                  if (typeof sl.dt == "string") {
+                    sl.dt = new Date(sl.dt)
+                  }
+                })
+              })
+            })
+            setCategoryList(data)
+          })
+        console.log("Update status")
         start = UPDATE_EVERY;
       }
     }, 1000)
-    return (() => { console.log("clear"); clearInterval(loop) })
+    return (() => { clearInterval(loop) })
   }, [])
 
   const getLastUpdateDate = () => {
