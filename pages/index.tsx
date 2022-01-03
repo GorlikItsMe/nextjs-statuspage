@@ -69,7 +69,6 @@ export default function StatusPage({
   }
 
   const getLastUpdateDateString = () => {
-
     const dtnow = new Date().getTime();
     const d = Math.round(Math.abs((dtnow - getLastUpdateDate().getTime()) / 1000));
     if (d < 60) { return `${d} sec ago` }

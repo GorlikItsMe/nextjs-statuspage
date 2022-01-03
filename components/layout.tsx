@@ -30,7 +30,7 @@ export default function Layout({
         <meta name="twitter:card" content="summary_large_image" />
       </Head>
       <header className="p-5 text-center">
-        <h1 className="text-3xl font-bold text-blue-500">Status Page</h1>
+        <h1 className="title text-6xl font-bold text-blue-500">Status Page</h1>
       </header>
       <main>{children}</main>
       {!home && (
