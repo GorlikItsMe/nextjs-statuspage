@@ -14,7 +14,7 @@ export default function StatusCategory({ category }: {
       <h2 className='text-2xl'>{category.name}</h2>
       <div>
         {category.Service.map((s) => {
-          return <StatusService key={s.categoryId} service={s} />
+          return <StatusService key={s.id} service={s} />
         })}
       </div>
     </div>
