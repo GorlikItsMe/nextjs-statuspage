@@ -6,8 +6,9 @@ import Layout from '../../components/layout';
 import Head from 'next/head';
 import TimeAgo from 'javascript-time-ago'
 import pl from 'javascript-time-ago/locale/pl.json'
+import EventInfo from '../../components/EventInfo';
 
-TimeAgo.addDefaultLocale(pl)
+TimeAgo.addLocale(pl)
 
 interface ServicePageProps {
     service: Service & {
@@ -15,7 +16,6 @@ interface ServicePageProps {
         StatusLog: StatusLog[];
     }
 }
-
 export default function ServicePage({ service }: ServicePageProps) {
     const [uptimeStr, setUptimeStr] = useState("...")
     const timeAgo = new TimeAgo('pl')
@@ -60,13 +60,10 @@ export default function ServicePage({ service }: ServicePageProps) {
             </div>
 
             <div className="mx-auto rounded-xl shadow-lg p-2 px-4 mt-4 mb-1 bg-white">
-                <h2 className='text-2xl mb-2'>Last events</h2>
+                <h2 className='text-2xl mb-2'>Last 5 events</h2>
                 {service.Event.map((e) => {
-                    return (
-                        <div key={e.id}>
-                            Event_{e.id}
-                        </div>
-                    )
+                    let isLast = (service.Event[0].id == e.id)
+                    return <EventInfo key={e.id} event={e} isNow={isLast} />
                 })}
             </div>
         </Layout>
@@ -93,7 +90,12 @@ export const getServerSideProps: GetServerSideProps = async ({
     const service = await prisma.service.findUnique({
         where: { id: sid },
         include: {
-            Event: true,
+            Event: {
+                take: 5,
+                orderBy: {
+                    dtStart: "desc"
+                }
+            },
             StatusLog: {
                 take: 1,
                 orderBy: {
