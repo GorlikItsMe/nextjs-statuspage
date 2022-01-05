@@ -24,9 +24,9 @@ export default function Layout({
         />
         <meta
           property="og:image"
-          content={`https://og-image.vercel.app/${encodeURI(
+          content={`https://og-image.vercel.app/*${encodeURI(
             siteTitle
-          )}.png?theme=dark&md=0&fontSize=75px&images=${encodeURIComponent(iconUrl)}`}
+          )}*.png?theme=dark&md=1&fontSize=125px&images=${encodeURIComponent(iconUrl)}&widths=350&heights=350`}
         />
         <meta name="og:title" content={siteTitle} />
         <meta name="twitter:card" content="summary_large_image" />
