@@ -81,10 +81,12 @@ export default function StatusPage({
       <Head>
         <title>Status Page</title>
       </Head>
-      {categoryListFromApi && categoryListFromApi.map((c) => {
-        return <StatusCategory key={c.id} category={c} />
-      })}
-      <div className="text-sm p-2 flex flex-row">
+      <div className='mx-2'>
+        {categoryListFromApi && categoryListFromApi.map((c) => {
+          return <StatusCategory key={c.id} category={c} />
+        })}
+      </div>
+      <div className="text-sm p-2 mx-2 flex flex-row">
         <div className="basis-1/2 text-gray-600">
           Refresh in {updateTimeSec} seconds
         </div>

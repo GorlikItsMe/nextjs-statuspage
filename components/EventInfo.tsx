@@ -2,43 +2,7 @@ import React from 'react'
 import { Event } from '@prisma/client';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowAltCircleUp, faArrowAltCircleDown } from '@fortawesome/free-regular-svg-icons'
-
-var timeSince = (dtStart: Date, dtEnd: Date) => {
-    var seconds = Math.floor((dtEnd.getTime() - dtStart.getTime()) / 1000);
-    var intervalType;
-
-    var interval = Math.floor(seconds / 31536000);
-    if (interval >= 1) {
-        intervalType = 'year';
-    } else {
-        interval = Math.floor(seconds / 2592000);
-        if (interval >= 1) {
-            intervalType = 'month';
-        } else {
-            interval = Math.floor(seconds / 86400);
-            if (interval >= 1) {
-                intervalType = 'day';
-            } else {
-                interval = Math.floor(seconds / 3600);
-                if (interval >= 1) {
-                    intervalType = "hour";
-                } else {
-                    interval = Math.floor(seconds / 60);
-                    if (interval >= 1) {
-                        intervalType = "minute";
-                    } else {
-                        interval = seconds;
-                        intervalType = "second";
-                    }
-                }
-            }
-        }
-    }
-    if (interval > 1 || interval === 0) {
-        intervalType += 's';
-    }
-    return interval + ' ' + intervalType;
-};
+import timeSince from '../lib/timeSince'
 
 interface EventInfoProps {
     event: Event
@@ -56,8 +20,8 @@ export default function EventInfo({ event, isNow }: EventInfoProps) {
 
     if (event.isOnline) {
         return (
-            <div className={`bg-green-50 rounded-xl shadow-lg p-4 mb-2 ${isNowClassName}`} >
-                <div className='flex'>
+            <div className={`bg-green-50 hover:bg-green-100 rounded-xl shadow-lg p-4 mb-2 ${isNowClassName}`} >
+                <div className='flex items-center'>
                     <FontAwesomeIcon icon={faArrowAltCircleUp} className='h-6 text-green-500' />
                     <div className='ml-2'>Running again</div>
                 </div>
@@ -66,8 +30,8 @@ export default function EventInfo({ event, isNow }: EventInfoProps) {
         )
     }
     return (
-        <div className={`bg-red-50 rounded-xl shadow-lg p-4 mb-2 ${isNowClassName}`}>
-            <div className='flex'>
+        <div className={`bg-red-50 hover:bg-red-100 rounded-xl shadow-lg p-4 mb-2 ${isNowClassName}`}>
+            <div className='flex items-center'>
                 <FontAwesomeIcon icon={faArrowAltCircleDown} className='h-6 text-red-500' />
                 <div className='ml-2'>Down for {agoStr}</div>
             </div>

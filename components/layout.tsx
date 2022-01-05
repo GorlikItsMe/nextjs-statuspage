@@ -1,9 +1,10 @@
 import Head from 'next/head'
 import Image from 'next/image'
 import Link from 'next/link'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 
-const name = '[Your Name]'
-export const siteTitle = 'Next.js Sample Website'
+export const siteTitle = 'StatusPage'
 
 export default function Layout({
   children,
@@ -29,14 +30,19 @@ export default function Layout({
         <meta name="og:title" content={siteTitle} />
         <meta name="twitter:card" content="summary_large_image" />
       </Head>
-      <header className="p-5 text-center">
-        <h1 className="title text-6xl font-bold text-blue-500">Status Page</h1>
-      </header>
+      <Link href="/">
+        <header className="p-5 text-center cursor-pointer">
+          <h1 className="title md:text-6xl text-4xl font-bold text-blue-500">Status Page</h1>
+        </header>
+      </Link>
       <main>{children}</main>
       {!home && (
-        <div className="">
+        <div className="mx-4">
           <Link href="/">
-            <a>← Back to home</a>
+            <a className='flex items-center'>
+              <FontAwesomeIcon icon={faArrowLeft} className='h-4 mr-1' />
+              Back to home
+            </a>
           </Link>
         </div>
       )}

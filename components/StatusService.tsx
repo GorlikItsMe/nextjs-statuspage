@@ -16,7 +16,7 @@ export default function StatusService({ service }: {
   if (isRed) {
     return (
       <Link href={`/service/${service.id}`} passHref>
-        <div className='mx-auto bg-red-100 rounded-xl shadow-lg p-2 px-4 mb-1 flex flex-row cursor-pointer'>
+        <div className='mx-auto bg-red-100 rounded-xl shadow-lg p-2 px-4 mb-1 flex items-center flex-row cursor-pointer hover:bg-red-200'>
           <div className='basis-3/4'>{service.name}</div>
           <div className='text-red-500 text-sm basis-1/4 text-right'>Outage</div>
         </div>
@@ -25,7 +25,7 @@ export default function StatusService({ service }: {
   }
   return (
     <Link href={`/service/${service.id}`} passHref>
-      <div className='mx-auto bg-green-100 rounded-xl shadow-lg p-2 px-4 mb-1 flex flex-row cursor-pointer'>
+      <div className='mx-auto bg-green-100 rounded-xl shadow-lg p-2 px-4 mb-1 flex items-center flex-row cursor-pointer hover:bg-green-200'>
         <div className='basis-3/4'>{service.name}</div>
         <div className='text-green-500 text-sm basis-1/4 text-right'>Operational</div>
       </div>
