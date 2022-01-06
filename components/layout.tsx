@@ -24,7 +24,7 @@ export default function Layout({
         />
         <meta
           property="og:image"
-          content={`https://og-image.vercel.app/*${encodeURI(
+          content={`https://og.zakku.eq/*${encodeURI(
             siteTitle
           )}*.png?theme=dark&md=1&fontSize=125px&images=${encodeURIComponent(iconUrl)}&widths=350&heights=350`}
         />
