@@ -4,10 +4,10 @@
     "dev": "next dev",
     "build": "npx prisma generate && next build",
     "start": "next start",
-    "db_push": "npx prisma db push",
-    "studio": "npx prisma studio",
-    "generate-client": "PRISMA_CLIENT_ENGINE_TYPE='dataproxy' prisma generate",
-    "migrate": "DATABASE_URL=\"$MIGRATE_DATABASE_URL\" prisma migrate deploy"
+    "db:push": "npx prisma db push",
+    "db:studio": "npx prisma studio",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate deploy"
   },
   "dependencies": {
     "@prisma/client": "3.7.0",

@@ -1,70 +1,21 @@
 # NextJs StatusPage
 
-Strona z statusem twoich usług napisana przy użyciu Nextjs, Typescript. Używająca PlanetScale oraz cronhub.io
+Status page app which can be easily deployed on [Vercel](https://vercel.com)
+
+Nextjs, Typescript, Prisma, (database ORM) PlanetScale (database host) and cronhub.io (trigger check service event)
 
 ## Setup
 
-### Next.js
-
-```bash
-npm install
-npm run dev
-npm build
-```
-
-### Prisma (database)
-
-```bash
-npx prisma db push # synchronizowane bazy danych
-npx prisma studio # tryb studia (łatwe edytowanie bazy danych)
-```
-
-### cronhub.io
-
-Ustaw cron na `*/5 * * * *` (co 5 min) żeby robił GET'a do `/api/cron`
-
-## Examples (what i will propably use in future)
-
-```ts
-export const getStaticProps: GetStaticProps = async () => {
-  const feed = await prisma.post.findMany({
-    where: { published: true },
-    include: {
-      author: {
-        select: { name: true },
-      },
-    },
-  });
-  return { props: { feed } };
-};
-```
-
-```
-export const getServerSideProps: GetServerSideProps = async ({ params }) => {
-  const post = await prisma.post.findUnique({
-    where: {
-      id: Number(params?.id) || -1,
-    },
-    include: {
-      author: {
-        select: { name: true },
-      },
-    },
-  });
-  return {
-    props: post,
-  };
-};
-```
-
-## Setup PlanetScale
-
-```
-sudo apt-get install mysql-client
-wget https://github.com/planetscale/cli/releases/download/v0.88.0/pscale_0.88.0_linux_amd64.deb
-sudo dpkg -i pscale_0.88.0_linux_amd64.deb
-
-pscale login
-
-pscale shell statuspage main  # access to database sql
-```
+1. `yarn`
+2. Create Database on [PlanetScale](https://app.planetscale.com/)
+3. Copy `.env.example` to `.env`
+4. Set correct `DATABASE_URL` in `.env` file
+5. `yarn db:generate`
+6. `yarn db:push`
+7. Open prisma studio (database client) `yarn db:studio`
+8. Create new Categorys in Category table
+9. Create new Services in Service table
+10. `yarn dev`
+11. Check localhost:3000 (if you can see services list is ok)
+12. Go to [cronhub.io](https://cronhub.io) and create account
+13. Set cron to `*/5 * * * *` (every 5min) to open `https://YOURDOMAIN.COM/api/cron`
