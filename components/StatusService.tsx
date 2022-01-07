@@ -1,17 +1,13 @@
 import { Service, StatusLog } from '@prisma/client';
 import Link from 'next/link';
+import { StatusApiOutputService } from '../pages/api/status';
 
 
 
 export default function StatusService({ service }: {
-  service: (Service & {
-    StatusLog: StatusLog[];
-  })
+  service: StatusApiOutputService
 }) {
-  let isRed = true;
-  if (service.StatusLog.length != 0) {
-    isRed = !service.StatusLog[0].isOnline;
-  }
+  let isRed = !service.isOnline;
 
   if (isRed) {
     return (

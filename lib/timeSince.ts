@@ -1,4 +1,7 @@
 export default function timeSince(dtStart: Date, dtEnd: Date) {
+  if (typeof dtStart == "string"){dtStart = new Date(dtStart)}
+  if (typeof dtEnd == "string"){dtEnd = new Date(dtEnd)}
+  
   var seconds = Math.floor((dtEnd.getTime() - dtStart.getTime()) / 1000);
   var intervalType;
 

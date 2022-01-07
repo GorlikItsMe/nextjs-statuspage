@@ -1,20 +1,31 @@
 import React from 'react'
-import { Event } from '@prisma/client';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowAltCircleUp, faArrowAltCircleDown } from '@fortawesome/free-regular-svg-icons'
 import timeSince from '../lib/timeSince'
 
 interface EventInfoProps {
-    event: Event
+    event: {
+        id: number;
+        serviceId?: number;
+        isOnline: boolean;
+        dtStart: Date;
+        dtEnd: Date;
+        msg: string | null;
+    }
     isNow?: Boolean
+}
+
+function dt2Str(dt: Date) {
+    if (typeof dt == "string") { dt = new Date(dt) }
+    return dt.toLocaleString()
 }
 
 export default function EventInfo({ event, isNow }: EventInfoProps) {
     let agoStr = timeSince(event.dtStart, event.dtEnd)
-    let dtStr = `${event.dtStart.toLocaleString()} - ${event.dtEnd.toLocaleString()}`
+    let dtStr = `${dt2Str(event.dtStart)} - ${dt2Str(event.dtEnd)}`
     let isNowClassName = ""
     if (isNow) {
-        dtStr = `${event.dtStart.toLocaleString()} - now`
+        dtStr = `${dt2Str(event.dtStart)} - now`
         isNowClassName = 'mb-4'
     }
 

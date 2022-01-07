@@ -31,10 +31,12 @@ export default function Layout({
         <meta name="og:title" content={siteTitle} />
         <meta name="twitter:card" content="summary_large_image" />
       </Head>
-      <Link href="/">
-        <header className="p-5 text-center cursor-pointer">
-          <h1 className="title md:text-6xl text-4xl font-bold text-blue-500">Status Page</h1>
-        </header>
+      <Link href="/" passHref>
+        <a>
+          <header className="p-5 text-center cursor-pointer">
+            <h1 className="title md:text-6xl text-4xl font-bold text-blue-500">Status Page</h1>
+          </header>
+        </a>
       </Link>
       <main>{children}</main>
       {!home && (

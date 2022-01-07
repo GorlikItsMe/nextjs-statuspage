@@ -2,32 +2,37 @@ import { NextApiRequest, NextApiResponse } from "next";
 import prisma from "../../lib/prisma";
 import { statusApiCacheTimeSec } from "../../lib/cacheConfig";
 
-interface StatusApiOutputCategory {
+export interface StatusApiOutputService {
   id: number;
   name: string;
-  Service: {
+  pos: number;
+  isOnline: boolean;
+  checkDt: Date;
+  ms: number;
+  msg: string;
+  upSince: Date | null;
+  Event: {
     id: number;
-    name: string;
-    pos: number;
     isOnline: boolean;
-    checkDt: Date;
-    ms: number;
+    dtStart: Date;
+    dtEnd: Date;
     msg: string;
-    Event: {
-      id: number;
-      isOnline: boolean;
-      dtStart: Date;
-      dtEnd: Date;
-      msg: string;
-    }[];
   }[];
 }
-type StatusApiOutput = StatusApiOutputCategory[];
+export interface StatusApiOutputCategory {
+  id: number;
+  name: string;
+  updatedAt: Date;
+  Service: StatusApiOutputService[];
+}
+export type StatusApiOutput = StatusApiOutputCategory[];
 
 export default async function StatusAPI(
   _: NextApiRequest,
   res: NextApiResponse
 ) {
+  let output: StatusApiOutput = [];
+
   let categoryList = await prisma.category.findMany({
     select: {
       id: true,
@@ -69,15 +74,30 @@ export default async function StatusAPI(
     },
   });
 
-  let output: StatusApiOutput = [];
+  // last update time
+  let oldest_dt = new Date();
+  categoryList.forEach((c) => {
+    c.Service.forEach((s) => {
+      let thisServiceLastCheck = new Date(s.StatusLog[0].dt);
+      if (oldest_dt > thisServiceLastCheck) {
+        oldest_dt = thisServiceLastCheck;
+      }
+    });
+  });
 
   categoryList.forEach((c) => {
     let tOut: StatusApiOutputCategory = {
       id: c.id,
       name: c.name,
       Service: [],
+      updatedAt: oldest_dt,
     };
     c.Service.forEach((s) => {
+      let upSince: Date | null = null;
+      if (s.Event[0].isOnline) {
+        upSince = s.Event[0].dtStart;
+      }
+
       tOut.Service.push({
         id: s.id,
         name: s.name,
@@ -86,6 +106,7 @@ export default async function StatusAPI(
         checkDt: s.StatusLog[0].dt,
         ms: s.StatusLog[0].ms,
         msg: s.StatusLog[0].msg,
+        upSince: upSince,
         Event: s.Event,
       });
     });
