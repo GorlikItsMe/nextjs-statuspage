@@ -99,6 +99,7 @@ export default function StatusPage({
 }
 
 export const getServerSideProps: GetServerSideProps = async () => {
+  
   const categoryList = await prisma.category.findMany({
     include: {
       Service: {
@@ -113,6 +114,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
       }
     },
   });
+
   return {
     props: {
       categoryList
