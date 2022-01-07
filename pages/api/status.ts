@@ -78,6 +78,9 @@ export default async function StatusAPI(
   let oldest_dt = new Date();
   categoryList.forEach((c) => {
     c.Service.forEach((s) => {
+      if (s.StatusLog.length == 0) {
+        return; // service dont have any checks
+      }
       let thisServiceLastCheck = new Date(s.StatusLog[0].dt);
       if (oldest_dt > thisServiceLastCheck) {
         oldest_dt = thisServiceLastCheck;
