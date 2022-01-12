@@ -33,8 +33,6 @@ export default async function StatusAPI(
 ) {
   let output: StatusApiOutput = [];
 
-  console.log("run");
-  // fetch data
   let categoryList = await prisma.category.findMany({
     select: {
       id: true,
@@ -48,39 +46,7 @@ export default async function StatusAPI(
           id: true,
           name: true,
           pos: true,
-        },
-      },
-    },
-  });
-  // update output
-  categoryList.forEach((c) => {
-    output.push({
-      id: c.id,
-      name: c.name,
-      updatedAt: new Date(), // dummy
-      Service: c.Service.map((s) => {
-        return {
-          id: s.id,
-          name: s.name,
-          pos: s.pos,
-
-          isOnline: false, // dummy
-          checkDt: new Date(), // dummy
-          ms: 0, // dummy
-          msg: "", // dummy
-          upSince: null, // dummy
-          Event: [], // dummy
-        };
-      }),
-    });
-  });
-
-  output = await Promise.all(
-    output.map(async (c) => {
-      c.Service = await Promise.all(
-        c.Service.map(async (s) => {
-          const thisStatusLog = await prisma.statusLog.findFirst({
-            where: { serviceId: s.id },
+          StatusLog: {
             select: {
               isOnline: true,
               dt: true,
@@ -91,15 +57,8 @@ export default async function StatusAPI(
             orderBy: {
               dt: "desc",
             },
-          });
-
-          s.isOnline = thisStatusLog.isOnline;
-          s.checkDt = thisStatusLog.dt;
-          s.ms = thisStatusLog.ms;
-          s.msg = thisStatusLog.msg;
-
-          const thisLastEvents = await prisma.event.findMany({
-            where: { serviceId: s.id },
+          },
+          Event: {
             take: 5,
             orderBy: { id: "desc" },
             select: {
@@ -109,34 +68,70 @@ export default async function StatusAPI(
               dtEnd: true,
               msg: true,
             },
-          });
-          s.Event = thisLastEvents;
+          },
+        },
+      },
+    },
+  });
 
-          if (thisLastEvents[0].isOnline) {
-            s.upSince = thisLastEvents[0].dtStart;
-          }
-
-          return s;
-        })
-      );
-      return c;
-    })
-  );
-
+  // last update time
   let oldest_dt = new Date();
-  output.forEach((c) => {
+  categoryList.forEach((c) => {
     c.Service.forEach((s) => {
-      let thisServiceLastCheck = new Date(s.checkDt);
+      if (s.StatusLog.length == 0) {
+        return; // service dont have any checks
+      }
+      let thisServiceLastCheck = new Date(s.StatusLog[0].dt);
       if (oldest_dt > thisServiceLastCheck) {
         oldest_dt = thisServiceLastCheck;
       }
     });
   });
-  output.forEach((c) => {
-    c.updatedAt = oldest_dt;
-  });
 
-  console.log("fin");
+  categoryList.forEach((c) => {
+    let tOut: StatusApiOutputCategory = {
+      id: c.id,
+      name: c.name,
+      Service: [],
+      updatedAt: oldest_dt,
+    };
+    c.Service.forEach((s) => {
+      let upSince: Date | null = null;
+      if (s.Event.length >= 1) {
+        if (s.Event[0].isOnline) {
+          upSince = s.Event[0].dtStart;
+        }
+      }
+
+      if (s.StatusLog.length >= 1) {
+        tOut.Service.push({
+          id: s.id,
+          name: s.name,
+          pos: s.pos,
+          isOnline: s.StatusLog[0].isOnline,
+          checkDt: s.StatusLog[0].dt,
+          ms: s.StatusLog[0].ms,
+          msg: s.StatusLog[0].msg,
+          upSince: upSince,
+          Event: s.Event,
+        });
+      } else {
+        tOut.Service.push({
+          id: s.id,
+          name: s.name,
+          pos: s.pos,
+          isOnline: false,
+          checkDt: new Date(),
+          ms: 0,
+          msg: "Not checked yet",
+          upSince: upSince,
+          Event: s.Event,
+        });
+      }
+    });
+
+    output.push(tOut);
+  });
 
   res.setHeader("Cache-Control", `public, max-age=${statusApiCacheTimeSec}`);
   res.status(200).json(output);

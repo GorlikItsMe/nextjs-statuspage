@@ -1,6 +1,6 @@
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["extendedIndexes"]
+  previewFeatures = ["referentialIntegrity", "extendedIndexes"]
   // previewFeatures = ["referentialIntegrity", "dataProxy"]
 }
 
@@ -8,7 +8,7 @@ datasource db {
   provider          = "mysql"
   url               = env("DATABASE_URL")
   shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
-  // referentialIntegrity = "prisma"
+  referentialIntegrity = "prisma"
 }
 
 enum CheckMethodType {
@@ -52,7 +52,8 @@ model Event {
   dtEnd     DateTime @updatedAt @map(name: "updated_at")
   msg       String?
 
-  @@index([dtStart, dtEnd])
+  @@index([dtStart])
+  @@index([dtEnd])
 }
 
 model StatusLog {
