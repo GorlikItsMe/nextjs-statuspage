@@ -140,6 +140,25 @@ async function ProcessCheckReport(cr: CheckReport): Promise<CheckReport> {
   return cr;
 }
 
+async function getServiceListOld() {
+  return await prisma.service.findMany({
+    include: {
+      StatusLog: {
+        take: 1,
+        orderBy: {
+          dt: "desc",
+        },
+      },
+      Event: {
+        take: 1,
+        orderBy: {
+          id: "desc",
+        },
+      },
+    },
+  });
+}
+
 async function getServiceList(): Promise<
   (Service & {
     StatusLog: StatusLog[];
@@ -192,7 +211,7 @@ async function getServiceList(): Promise<
 export default async function CronAPI(_: NextApiRequest, res: NextApiResponse) {
   // Get services
   console.log("init");
-  const serviceList = await getServiceList();
+  const serviceList = await getServiceListOld();
   console.log("fin");
 
   let promiseList = [];
