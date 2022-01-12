@@ -140,24 +140,60 @@ async function ProcessCheckReport(cr: CheckReport): Promise<CheckReport> {
   return cr;
 }
 
-export default async function CronAPI(_: NextApiRequest, res: NextApiResponse) {
-  // Get services
-  const serviceList = await prisma.service.findMany({
-    include: {
-      StatusLog: {
-        take: 1,
+async function getServiceList(): Promise<
+  (Service & {
+    StatusLog: StatusLog[];
+    Event: Event[];
+  })[]
+> {
+  let output: (Service & {
+    StatusLog: StatusLog[];
+    Event: Event[];
+  })[] = [];
+  // get services
+  const serviceList = await prisma.service.findMany();
+  serviceList.forEach((s) => {
+    output.push({
+      id: s.id,
+      name: s.name,
+      pos: s.pos,
+      categoryId: s.categoryId,
+      check_method: s.check_method,
+      url: s.url,
+      createdAt: s.createdAt,
+      updatedAt: s.updatedAt,
+      StatusLog: [],
+      Event: [],
+    });
+  });
+
+  // get last status log and event
+  output = await Promise.all(
+    output.map(async (s) => {
+      const lastStatusLog = await prisma.statusLog.findFirst({
+        where: { serviceId: s.id },
         orderBy: {
           dt: "desc",
         },
-      },
-      Event: {
-        take: 1,
-        orderBy: {
-          id: "desc",
-        },
-      },
-    },
-  });
+      });
+      s.StatusLog = [lastStatusLog];
+      const lastEvent = await prisma.event.findFirst({
+        where: { serviceId: s.id },
+        orderBy: { id: "desc" },
+      });
+      s.Event = [lastEvent];
+      return s;
+    })
+  );
+
+  return output;
+}
+
+export default async function CronAPI(_: NextApiRequest, res: NextApiResponse) {
+  // Get services
+  console.log("init");
+  const serviceList = await getServiceList();
+  console.log("fin");
 
   let promiseList = [];
 
@@ -195,6 +231,6 @@ export default async function CronAPI(_: NextApiRequest, res: NextApiResponse) {
       });
     });
   });
-  console.log("=================")
+  console.log("=================");
   res.status(200).json(resultJson);
 }
