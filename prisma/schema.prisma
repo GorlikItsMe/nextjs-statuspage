@@ -1,13 +1,13 @@
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["referentialIntegrity"]
+  previewFeatures = ["extendedIndexes"]
   // previewFeatures = ["referentialIntegrity", "dataProxy"]
 }
 
 datasource db {
-  provider             = "mysql"
-  url                  = env("DATABASE_URL")
-  shadowDatabaseUrl    = env("SHADOW_DATABASE_URL")
+  provider          = "mysql"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
   // referentialIntegrity = "prisma"
 }
 
@@ -39,6 +39,7 @@ model Service {
 
   Event     Event[]
   StatusLog StatusLog[]
+  @@index([updatedAt])
   @@map(name: "services")
 }
 
@@ -50,6 +51,8 @@ model Event {
   dtStart   DateTime @default(now()) @map(name: "created_at")
   dtEnd     DateTime @updatedAt @map(name: "updated_at")
   msg       String?
+
+  @@index([dtStart, dtEnd])
 }
 
 model StatusLog {
@@ -60,4 +63,6 @@ model StatusLog {
   dt        DateTime @default(now()) @map(name: "created_at")
   ms        Float    @default(0)
   msg       String?
+
+  @@index([dt])
 }

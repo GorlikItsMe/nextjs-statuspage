@@ -97,21 +97,37 @@ export default async function StatusAPI(
     };
     c.Service.forEach((s) => {
       let upSince: Date | null = null;
-      if (s.Event[0].isOnline) {
-        upSince = s.Event[0].dtStart;
+      if (s.Event.length >= 1) {
+        if (s.Event[0].isOnline) {
+          upSince = s.Event[0].dtStart;
+        }
       }
 
-      tOut.Service.push({
-        id: s.id,
-        name: s.name,
-        pos: s.pos,
-        isOnline: s.StatusLog[0].isOnline,
-        checkDt: s.StatusLog[0].dt,
-        ms: s.StatusLog[0].ms,
-        msg: s.StatusLog[0].msg,
-        upSince: upSince,
-        Event: s.Event,
-      });
+      if (s.StatusLog.length >= 1) {
+        tOut.Service.push({
+          id: s.id,
+          name: s.name,
+          pos: s.pos,
+          isOnline: s.StatusLog[0].isOnline,
+          checkDt: s.StatusLog[0].dt,
+          ms: s.StatusLog[0].ms,
+          msg: s.StatusLog[0].msg,
+          upSince: upSince,
+          Event: s.Event,
+        });
+      } else {
+        tOut.Service.push({
+          id: s.id,
+          name: s.name,
+          pos: s.pos,
+          isOnline: false,
+          checkDt: new Date(),
+          ms: 0,
+          msg: "Not checked yet",
+          upSince: upSince,
+          Event: s.Event,
+        });
+      }
     });
 
     output.push(tOut);
